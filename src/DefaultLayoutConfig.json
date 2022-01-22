@@ -1,0 +1,291 @@
+[
+  {
+    "type": "row",
+    "isClosable": true,
+    "isFocusOnShow": true,
+    "reorderEnabled": true,
+    "title": "",
+    "content": [
+      {
+        "type": "column",
+        "isClosable": true,
+        "isFocusOnShow": true,
+        "reorderEnabled": true,
+        "title": "",
+        "width": 75.47038327526133,
+        "content": [
+          {
+            "type": "stack",
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "height": 72.99077733860344,
+            "activeItemIndex": 0,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1640006113979000001",
+                    "table": "t"
+                  },
+                  "panelState": {
+                    "irisGridPanelState": {
+                      "isSelectingPartition": false,
+                      "partition": null,
+                      "partitionColumn": null
+                    },
+                    "irisGridState": {
+                      "advancedFilters": [],
+                      "advancedSettings": [
+                        ["filter-control-change-clears-all-filters", false],
+                        ["link-change-clears-all-filters", false]
+                      ],
+                      "aggregationSettings": {
+                        "aggregations": [],
+                        "showOnTop": false
+                      },
+                      "customColumnFormatMap": [],
+                      "isFilterBarShown": false,
+                      "quickFilters": [],
+                      "sorts": [],
+                      "userColumnWidths": [],
+                      "userRowHeights": [],
+                      "customColumns": [],
+                      "reverseType": "none",
+                      "rollupConfig": null,
+                      "showSearchBar": false,
+                      "searchValue": "",
+                      "selectDistinctColumns": [],
+                      "selectedSearchColumns": [],
+                      "invertSearchColumns": true,
+                      "pendingDataMap": []
+                    },
+                    "gridState": { "movedColumns": [], "movedRows": [] },
+                    "pluginState": null
+                  }
+                },
+                "title": "t",
+                "id": "kCVff2UyX",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "header": {},
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "activeItemIndex": 0,
+            "height": 27.00922266139657,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1640006113979000001",
+                    "table": "trades"
+                  },
+                  "panelState": {
+                    "irisGridPanelState": {
+                      "isSelectingPartition": false,
+                      "partition": null,
+                      "partitionColumn": null
+                    },
+                    "irisGridState": {
+                      "advancedFilters": [],
+                      "advancedSettings": [
+                        ["filter-control-change-clears-all-filters", false],
+                        ["link-change-clears-all-filters", false]
+                      ],
+                      "aggregationSettings": {
+                        "aggregations": [],
+                        "showOnTop": false
+                      },
+                      "customColumnFormatMap": [],
+                      "isFilterBarShown": false,
+                      "quickFilters": [[1, { "text": "1" }]],
+                      "sorts": [],
+                      "userColumnWidths": [],
+                      "userRowHeights": [],
+                      "customColumns": [],
+                      "reverseType": "none",
+                      "rollupConfig": null,
+                      "showSearchBar": false,
+                      "searchValue": "",
+                      "selectDistinctColumns": [],
+                      "selectedSearchColumns": [],
+                      "invertSearchColumns": true,
+                      "pendingDataMap": []
+                    },
+                    "gridState": { "movedColumns": [], "movedRows": [] },
+                    "pluginState": null
+                  }
+                },
+                "title": "trades",
+                "id": "ErfgquPE_",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "column",
+        "isClosable": true,
+        "isFocusOnShow": true,
+        "reorderEnabled": true,
+        "title": "",
+        "width": 24.52961672473868,
+        "content": [
+          {
+            "type": "stack",
+            "header": {},
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "activeItemIndex": 1,
+            "width": 50,
+            "height": 50,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1640006113979000001",
+                    "table": "trades2"
+                  },
+                  "panelState": {
+                    "irisGridPanelState": {
+                      "isSelectingPartition": false,
+                      "partition": null,
+                      "partitionColumn": null
+                    },
+                    "irisGridState": {
+                      "advancedFilters": [],
+                      "advancedSettings": [
+                        ["filter-control-change-clears-all-filters", false],
+                        ["link-change-clears-all-filters", false]
+                      ],
+                      "aggregationSettings": {
+                        "aggregations": [],
+                        "showOnTop": false
+                      },
+                      "customColumnFormatMap": [],
+                      "isFilterBarShown": false,
+                      "quickFilters": [[1, { "text": "1" }]],
+                      "sorts": [],
+                      "userColumnWidths": [],
+                      "userRowHeights": [],
+                      "customColumns": [],
+                      "reverseType": "none",
+                      "rollupConfig": null,
+                      "showSearchBar": false,
+                      "searchValue": "",
+                      "selectDistinctColumns": [],
+                      "selectedSearchColumns": [],
+                      "invertSearchColumns": true,
+                      "pendingDataMap": []
+                    },
+                    "gridState": { "movedColumns": [], "movedRows": [] },
+                    "pluginState": null
+                  }
+                },
+                "title": "trades2",
+                "id": "91rKKud3B",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "header": {},
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "activeItemIndex": 1,
+            "height": 50,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1640006113979000001",
+                    "table": "tSum"
+                  },
+                  "panelState": {
+                    "irisGridPanelState": {
+                      "isSelectingPartition": false,
+                      "partition": null,
+                      "partitionColumn": null
+                    },
+                    "irisGridState": {
+                      "advancedFilters": [],
+                      "advancedSettings": [
+                        ["filter-control-change-clears-all-filters", false],
+                        ["link-change-clears-all-filters", false]
+                      ],
+                      "aggregationSettings": {
+                        "aggregations": [],
+                        "showOnTop": false
+                      },
+                      "customColumnFormatMap": [],
+                      "isFilterBarShown": false,
+                      "quickFilters": [[0, { "text": "Arca" }]],
+                      "sorts": [],
+                      "userColumnWidths": [],
+                      "userRowHeights": [],
+                      "customColumns": [],
+                      "reverseType": "none",
+                      "rollupConfig": null,
+                      "showSearchBar": false,
+                      "searchValue": "",
+                      "selectDistinctColumns": [],
+                      "selectedSearchColumns": [],
+                      "invertSearchColumns": true,
+                      "pendingDataMap": []
+                    },
+                    "gridState": { "movedColumns": [], "movedRows": [] },
+                    "pluginState": null
+                  }
+                },
+                "title": "tSum",
+                "id": "-Ky4cnbop",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

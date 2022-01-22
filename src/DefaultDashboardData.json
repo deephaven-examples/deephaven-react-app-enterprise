@@ -1,0 +1,55 @@
+{
+  "closed": [],
+  "links": [
+    {
+      "start": {
+        "panelId": "kCVff2UyX",
+        "panelComponent": "IrisGridPanel",
+        "columnName": "Size",
+        "columnType": "int"
+      },
+      "end": {
+        "panelId": "ErfgquPE_",
+        "panelComponent": "IrisGridPanel",
+        "columnName": "Size",
+        "columnType": "int"
+      },
+      "id": "FiQ84rCZJ",
+      "type": "tableLink"
+    },
+    {
+      "start": {
+        "panelId": "kCVff2UyX",
+        "panelComponent": "IrisGridPanel",
+        "columnName": "Exchange",
+        "columnType": "java.lang.String"
+      },
+      "end": {
+        "panelId": "-Ky4cnbop",
+        "panelComponent": "IrisGridPanel",
+        "columnName": "Exchange",
+        "columnType": "java.lang.String"
+      },
+      "id": "d0h_2HKBg",
+      "type": "tableLink"
+    },
+    {
+      "start": {
+        "panelId": "kCVff2UyX",
+        "panelComponent": "IrisGridPanel",
+        "columnName": "Size",
+        "columnType": "int"
+      },
+      "end": {
+        "panelId": "91rKKud3B",
+        "panelComponent": "IrisGridPanel",
+        "columnName": "Size",
+        "columnType": "int"
+      },
+      "id": "gO_m4dq0T",
+      "type": "tableLink"
+    }
+  ],
+  "filterSets": [],
+  "sessionId": "ZYA92VZdXK"
+}

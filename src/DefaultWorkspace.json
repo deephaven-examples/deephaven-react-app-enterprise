@@ -1,0 +1,12 @@
+{
+  "data": {
+    "settings": {
+      "defaultDateTimeFormat": "yyyy-MM-dd HH:mm:ss.SSS",
+      "formatter": [],
+      "timeZone": "America/New_York",
+      "showTimeZone": false,
+      "showTSeparator": true,
+      "disableMoveConfirmation": false
+    }
+  }
+}
