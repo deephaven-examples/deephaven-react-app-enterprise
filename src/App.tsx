@@ -7,9 +7,19 @@ import { IrisGridModelFactory } from "@deephaven/iris-grid"; // iris-grid is use
 import dh from "@deephaven/jsapi-shim"; // Import the shim to use the JS API
 import { setUser, setWorkspace } from "@deephaven/redux";
 import { clientConnected, loadTable } from "./Utils";
-import DefaultDashboardData from "./DefaultDashboardData.json";
-import DefaultLayoutConfig from "./DefaultLayoutConfig.json";
-import DefaultWorkspace from "./DefaultWorkspace.json";
+
+// Dashboard data stores the links
+import DefaultDashboardData from "./json/DashboardData.json";
+
+// Layout config stores the position and content of all the panels
+import DefaultLayoutConfig from "./json/LayoutConfig.json";
+
+// Layout settings control whether panels can be moved or closed or have headers
+import DefaultLayoutSettings from "./json/LayoutSettings.json";
+
+// The default user workspace stores some of the app settings used by some panels
+import DefaultWorkspace from "./json/Workspace.json";
+
 import "./App.scss"; // Styles for in this app
 
 const API_URL = process.env.REACT_APP_DEEPHAVEN_API_URL ?? "";
@@ -112,9 +122,14 @@ function App() {
   return (
     <div className="App">
       {!isLoading && (
-        <Dashboard id={DASHBOARD_ID} layoutConfig={DefaultLayoutConfig}>
+        <Dashboard
+          id={DASHBOARD_ID}
+          layoutConfig={DefaultLayoutConfig}
+          layoutSettings={DefaultLayoutSettings}
+        >
+          {/* TODO: Allow setting a theme in GridPlugin: https://github.com/deephaven/web-client-ui/issues/393 */}
           {/* TODO: Need to fix types in dashboard plugins: https://github.com/deephaven/web-client-ui/issues/392 */}
-          {/* 
+          {/*
         //@ts-ignore */}
           <GridPlugin hydrate={hydrateGrid} />
           {/* 
