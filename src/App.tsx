@@ -6,7 +6,7 @@ import { GridPlugin, LinkerPlugin } from "@deephaven/dashboard-core-plugins";
 import { IrisGridModelFactory } from "@deephaven/iris-grid"; // iris-grid is used to display Deephaven tables
 import dh from "@deephaven/jsapi-shim"; // Import the shim to use the JS API
 import { setUser, setWorkspace } from "@deephaven/redux";
-import { clientConnected, loadTable } from "./Utils";
+import { clientConnected, loadDashboard, loadTable } from "./Utils";
 import IrisGridTheme from "./IrisGridTheme";
 
 // Dashboard data stores the links
@@ -43,6 +43,7 @@ function App() {
   const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
   const [client, setClient] = useState<any>();
+  const [layoutConfig, setLayoutConfig] = useState<any>();
   const dispatch = useDispatch();
 
   const initApp = useCallback(async () => {
@@ -67,9 +68,22 @@ function App() {
 
       await client.login({ username: USER, token: PASSWORD, type: "password" });
 
+      let newDashboardData = DefaultDashboardData;
+      let newLayoutConfig = DefaultLayoutConfig;
+      const searchParams = new URLSearchParams(window.location.search);
+      const workspaceDashboardId = searchParams.get("dashboard");
+      if (workspaceDashboardId) {
+        // If a dashboard ID was provided in the URL param, load that one
+        const dashboard = await loadDashboard(client, workspaceDashboardId);
+        console.log("loadDashboard dashboard is", dashboard);
+
+        newDashboardData = dashboard.data;
+        newLayoutConfig = dashboard.config;
+      }
+
       // Set the redux values needed for dashboards to function
       dispatch(setWorkspace(DefaultWorkspace as any));
-      dispatch(setDashboardData(DASHBOARD_ID, DefaultDashboardData));
+      dispatch(setDashboardData(DASHBOARD_ID, newDashboardData));
       // TODO: Pull from server
       dispatch(
         setUser({
@@ -79,6 +93,7 @@ function App() {
           permissions: {},
         } as any)
       );
+      setLayoutConfig(newLayoutConfig);
     } catch (e) {
       console.error("Unable to load table", e);
       setError(`${e}`);
@@ -126,7 +141,7 @@ function App() {
       {!isLoading && (
         <Dashboard
           id={DASHBOARD_ID}
-          layoutConfig={DefaultLayoutConfig}
+          layoutConfig={layoutConfig}
           layoutSettings={DefaultLayoutSettings}
         >
           {/* TODO: Need to fix types in dashboard plugins: https://github.com/deephaven/web-client-ui/issues/392 */}
