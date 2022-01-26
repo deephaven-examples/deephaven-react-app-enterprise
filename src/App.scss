@@ -17,6 +17,9 @@
   // See all the golden layout properties, check https://github.com/deephaven/web-client-ui/blob/main/packages/dashboard/src/layout/GoldenLayout.scss
   .lm_goldenlayout {
     background: $white;
+    .lm_content {
+      background: $gray-100;
+    }
   }
 
   // Override some styles in Iris Grid side bar
@@ -33,6 +36,10 @@
           color: $black;
         }
       }
+    }
+
+    .grid-settings-button {
+      background-image: linear-gradient(to left, $white 19px, transparent);
     }
   }
 }

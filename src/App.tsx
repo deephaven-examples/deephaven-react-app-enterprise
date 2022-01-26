@@ -7,6 +7,7 @@ import { IrisGridModelFactory } from "@deephaven/iris-grid"; // iris-grid is use
 import dh from "@deephaven/jsapi-shim"; // Import the shim to use the JS API
 import { setUser, setWorkspace } from "@deephaven/redux";
 import { clientConnected, loadTable } from "./Utils";
+import IrisGridTheme from "./IrisGridTheme";
 
 // Dashboard data stores the links
 import DefaultDashboardData from "./json/DashboardData.json";
@@ -102,6 +103,7 @@ function App() {
         ...props,
         localDashboardId: DASHBOARD_ID,
         client,
+        theme: IrisGridTheme,
         makeModel,
       };
     },
@@ -127,11 +129,10 @@ function App() {
           layoutConfig={DefaultLayoutConfig}
           layoutSettings={DefaultLayoutSettings}
         >
-          {/* TODO: Allow setting a theme in GridPlugin: https://github.com/deephaven/web-client-ui/issues/393 */}
           {/* TODO: Need to fix types in dashboard plugins: https://github.com/deephaven/web-client-ui/issues/392 */}
           {/*
         //@ts-ignore */}
-          <GridPlugin hydrate={hydrateGrid} />
+          <GridPlugin hydrate={hydrateGrid} theme={IrisGridTheme} />
           {/* 
         //@ts-ignore */}
           <LinkerPlugin />

@@ -1,0 +1,71 @@
+import IrisGridTheme from "./IrisGridTheme.module.scss";
+
+export default Object.freeze({
+  backgroundColor: IrisGridTheme["grid-bg"],
+  font: IrisGridTheme.font,
+  headerBackgroundColor: IrisGridTheme["header-bg"],
+  headerColor: IrisGridTheme["header-color"],
+  headerSeparatorColor: IrisGridTheme["header-separator-color"],
+  headerSeparatorHoverColor: IrisGridTheme["header-separator-hover-color"],
+  headerHiddenSeparatorHoverColor:
+    IrisGridTheme["header-hidden-separator-hover-color"],
+  headerSortBarColor: IrisGridTheme["header-sort-bar-color"],
+  headerFont: IrisGridTheme["header-font"],
+  rowBackgroundColors: IrisGridTheme["row-background-colors"],
+  rowHoverBackgroundColor: IrisGridTheme["row-hover-bg"],
+  selectionColor: IrisGridTheme["selection-color"],
+  selectionOutlineColor: IrisGridTheme["selection-outline-color"],
+  selectedRowHoverBackgroundColor: IrisGridTheme["selected-row-hover-bg"],
+  scrollBarBackgroundColor: IrisGridTheme["scroll-bar-bg"],
+  scrollBarHoverBackgroundColor: IrisGridTheme["scroll-bar-hover-bg"],
+  scrollBarColor: IrisGridTheme["scroll-bar-color"],
+  scrollBarHoverColor: IrisGridTheme["scroll-bar-hover-color"],
+  textColor: IrisGridTheme["text-color"],
+  positiveNumberColor: IrisGridTheme["positive-number-color"],
+  negativeNumberColor: IrisGridTheme["negative-number-color"],
+  zeroNumberColor: IrisGridTheme["zero-number-color"],
+  dateColor: IrisGridTheme["date-color"],
+  filterBarActiveBackgroundColor: IrisGridTheme["filter-bar-active-bg"],
+  filterBarExpandedBackgroundColor: IrisGridTheme["filter-bar-expanded-bg"],
+  filterBarExpandedActiveBackgroundColor:
+    IrisGridTheme["filter-bar-expanded-active-bg"],
+  filterBarExpandedActiveCellBackgroundColor:
+    IrisGridTheme["filter-bar-expanded-active-cell-bg"],
+  filterBarSeparatorColor: IrisGridTheme["filter-bar-separator-color"],
+  filterBarActiveColor: IrisGridTheme["filter-bar-active-color"],
+  filterBarErrorColor: IrisGridTheme["filter-bar-error-color"],
+  filterIconColor: IrisGridTheme["filter-icon-color"],
+  filterBarBackgroundColor: IrisGridTheme["filter-bar-bg"],
+  scrimColor: IrisGridTheme["scrim-color"],
+  contextMenuSortIconColor: IrisGridTheme["context-menu-sort-icon-color"],
+
+  allowRowResize: false,
+  allowRowReorder: false,
+  autoSelectRow: true,
+  gridColor: null,
+  columnHoverBackgroundColor: null,
+  headerHorizontalPadding: 12,
+  scrollBarSize: 10,
+  scrollBarHoverSize: 12,
+  minScrollHandleSize: 24,
+  rowHeight: 19,
+  columnWidth: 100,
+  rowHeaderWidth: 0,
+  columnHeaderHeight: 30,
+  filterBarHeight: 30,
+  filterBarCollapsedHeight: 4,
+  sortHeaderBarHeight: 2,
+  filterBarHorizontalPadding: 4,
+
+  // Amount of blur to apply to the bottom of the scrim while animating in
+  scrimBlurSize: 25,
+  minScrimTransitionTime: 150,
+  maxScrimTransitionTime: 350,
+
+  scrollSnapToRow: true,
+
+  scrollBarCasingColor: IrisGridTheme["scroll-bar-casing-color"],
+  scrollBarCornerColor: IrisGridTheme["scroll-bar-corner-color"],
+
+  linkerColumnHoverBackgroundColor: IrisGridTheme["linker-column-hover-bg"],
+});
