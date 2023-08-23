@@ -1,21 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { store } from "@deephaven/redux";
-
-// Fira fonts are not necessary, but look the best
-import "fira";
-
-// Need to import the base style sheet for proper styling
 import "@deephaven/components/scss/BaseStyleSheet.scss";
-import "./index.scss";
-import App from "./App";
+import { ApiContext } from "@deephaven/jsapi-bootstrap";
+import dh from "@deephaven/jsapi-shim";
+import { store } from "@deephaven/redux";
+import App from "./App.tsx";
+import "./index.css";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <ApiContext.Provider value={dh}>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>,
+  </ApiContext.Provider>,
   document.getElementById("root")
 );

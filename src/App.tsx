@@ -1,9 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { LoadingOverlay } from "@deephaven/components"; // Use the loading spinner from the Deephaven components package
-import Dashboard, { PanelProps, setDashboardData } from "@deephaven/dashboard";
+import Dashboard, {
+  DehydratedPanelProps,
+  setDashboardData,
+} from "@deephaven/dashboard";
 import { GridPlugin, LinkerPlugin } from "@deephaven/dashboard-core-plugins";
-import { IrisGridModelFactory } from "@deephaven/iris-grid"; // iris-grid is used to display Deephaven tables
+import {
+  IrisGridModel,
+  IrisGridModelFactory,
+  IrisGridThemeType,
+} from "@deephaven/iris-grid"; // iris-grid is used to display Deephaven tables
 import dh from "@deephaven/jsapi-shim"; // Import the shim to use the JS API
 import { setUser, setWorkspace } from "@deephaven/redux";
 import { clientConnected, loadDashboard, loadTable } from "./Utils";
@@ -23,20 +30,22 @@ import DefaultWorkspace from "./json/Workspace.json";
 
 import "./App.scss"; // Styles for in this app
 
-const API_URL = process.env.REACT_APP_DEEPHAVEN_API_URL ?? "";
+const API_URL = import.meta.env.VITE_DEEPHAVEN_API_URL ?? "";
 
-const USER = process.env.REACT_APP_DEEPHAVEN_USER ?? "";
+const USER = import.meta.env.VITE_DEEPHAVEN_USER ?? "";
 
-const PASSWORD = process.env.REACT_APP_DEEPHAVEN_PASSWORD ?? "";
+const PASSWORD = import.meta.env.VITE_DEEPHAVEN_PASSWORD ?? "";
 
 const DASHBOARD_ID = "Default";
+
+console.log("API_URL", API_URL);
 
 /**
  * A functional React component that displays a Deephaven table in an IrisGrid using the @deephaven/iris-grid package.
  * If the query param `tableName` is provided, it will attempt to open and display that table, expecting it to be present on the server.
  * E.g. http://localhost:3000/?tableName=myTable will attempt to open a table `myTable`
  * If no query param is provided, it will attempt to open a new session and create a basic time table and display that.
- * By default, tries to connect to the server defined in the REACT_APP_CORE_API_URL variable, which is set to http://localhost:1000/jsapi
+ * By default, tries to connect to the server defined in the VITE_CORE_API_URL variable, which is set to http://localhost:1000/jsapi
  * See create-react-app docs for how to update these env vars: https://create-react-app.dev/docs/adding-custom-environment-variables/
  */
 function App() {
@@ -49,7 +58,7 @@ function App() {
   const initApp = useCallback(async () => {
     try {
       // Connect to the Web API server
-      const baseUrl = new URL(API_URL ?? "", `${window.location}`);
+      const baseUrl = new URL(API_URL ?? "", `${API_URL}`);
 
       const websocketUrl = new URL("/socket", baseUrl);
       if (websocketUrl.protocol === "http:") {
@@ -106,9 +115,15 @@ function App() {
    * Takes the serialized props and loads the table from the server into a model
    */
   const hydrateGrid = useCallback(
-    (props: PanelProps): any => {
-      const { metadata } = props as any;
-      const { querySerial, table: tableName } = metadata;
+    (
+      props: DehydratedPanelProps
+    ): DehydratedPanelProps & {
+      localDashboardId: string;
+      makeModel: () => Promise<IrisGridModel>;
+      theme: Partial<IrisGridThemeType>;
+    } => {
+      const { metadata } = props;
+      const { querySerial, table: tableName } = metadata as any;
       const makeModel = async () => {
         const table = await loadTable(client, querySerial, tableName);
         return IrisGridModelFactory.makeModel(dh, table);
@@ -117,7 +132,6 @@ function App() {
         metadata: {},
         ...props,
         localDashboardId: DASHBOARD_ID,
-        client,
         theme: IrisGridTheme,
         makeModel,
       };
@@ -144,12 +158,7 @@ function App() {
           layoutConfig={layoutConfig}
           layoutSettings={DefaultLayoutSettings}
         >
-          {/* TODO: Need to fix types in dashboard plugins: https://github.com/deephaven/web-client-ui/issues/392 */}
-          {/*
-        //@ts-ignore */}
-          <GridPlugin hydrate={hydrateGrid} theme={IrisGridTheme} />
-          {/* 
-        //@ts-ignore */}
+          <GridPlugin hydrate={hydrateGrid} />
           <LinkerPlugin />
         </Dashboard>
       )}

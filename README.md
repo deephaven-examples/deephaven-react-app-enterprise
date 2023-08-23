@@ -1,64 +1,44 @@
 # Example Deephaven Enterprise React Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). It is to provide an example React application connecting to Deephaven and displaying a table of data.
+This project was bootstrapped with [Vite using the react-ts template](https://vitejs.dev/guide/). It is to provide an example React application connecting to Deephaven and displaying a table of data within a dashboard.
 
-## Getting Started
+## Quick Start
 
-1. **Configure the server**: Set the environment variables to point to your Deephaven server and credentials. See [.env](./.env) file for variables, and override them using environment variables or a `.env.development.local` file. See [create-react-app docs](https://create-react-app.dev/docs/adding-custom-environment-variables/) for more details.
-2. **Install dependencies**: Run `npm install` to install all dependencies required.
-3. **Start the UI**: Run `npm start` to start up the UI. It should automatically open up at http://localhost:3000 and load up a table. You can specify which query/table to load using query params, e.g. http://localhost:3000/?queryName=myQuery&tableName=myTable.
+You need to set the ENV variables defined in [.env](./.env). After those are set, simply run:
 
-## Advanced
+```
+npm install
+npm start
+```
 
-### Application Mode
+Your development server will start up. You can then open up the URL in your browser and you should see a dashboard loaded with data.
 
-See the guide for how to set up core in Application Mode: https://deephaven.io/core/docs/how-to-guides/app-mode/
+The layouts defined in [./src/json/LayoutConfig.json](./src/json/LayoutConfig.json) specify which panels from which queries are loaded, and should be modified to match your setup.
 
-Once Deephaven is running, you can open a table with a specific name by adding the query param `tableName`, e.g. http://localhost:3000/?tableName=world
+# React + TypeScript + Vite
 
-### Configuring Server Address
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-By default, this project assumes you are hosting Deephaven with Python on the default port at http://localhost:10000. If Deephaven is running on a different port/server, update the `REACT_APP_CORE_API_URL` environment variable to point to the correct server. See [.env](./.env) file for the default definition, and [create-react-app docs](https://create-react-app.dev/docs/adding-custom-environment-variables/) for other ways to set this environment variable.
+Currently, two official plugins are available:
 
-## Available Scripts
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-In the project directory, you can run:
+## Expanding the ESLint configuration
 
-### `npm start`
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Configure the top-level `parserOptions` property like this:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```js
+   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+   },
+```
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
