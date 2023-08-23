@@ -1,26 +1,29 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Override node_modules/@types
+    "typeRoots": ["./@types", "./node_modules/@types"],
+    "paths": {
+      // This is used to override node_modules/@types
+      // https://github.com/microsoft/TypeScript/issues/22217
+      "*": ["./@types/*"]
+    },
+    "types": ["jest", "node"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"]
 }

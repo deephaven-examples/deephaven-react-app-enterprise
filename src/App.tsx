@@ -111,7 +111,7 @@ function App() {
       const { querySerial, table: tableName } = metadata;
       const makeModel = async () => {
         const table = await loadTable(client, querySerial, tableName);
-        return IrisGridModelFactory.makeModel(table);
+        return IrisGridModelFactory.makeModel(dh, table);
       };
       return {
         metadata: {},
