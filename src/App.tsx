@@ -43,10 +43,10 @@ console.log("API_URL", API_URL);
 /**
  * A functional React component that displays a Deephaven table in an IrisGrid using the @deephaven/iris-grid package.
  * If the query param `tableName` is provided, it will attempt to open and display that table, expecting it to be present on the server.
- * E.g. http://localhost:3000/?tableName=myTable will attempt to open a table `myTable`
+ * E.g. http://localhost:5173/?tableName=myTable will attempt to open a table `myTable`
  * If no query param is provided, it will attempt to open a new session and create a basic time table and display that.
- * By default, tries to connect to the server defined in the VITE_CORE_API_URL variable, which is set to http://localhost:1000/jsapi
- * See create-react-app docs for how to update these env vars: https://create-react-app.dev/docs/adding-custom-environment-variables/
+ * By default, tries to connect to the server defined in the VITE_DEEPHAVEN_API_URL variable, which is set to http://localhost:10000/jsapi
+ * Read more about VITE env variables: https://vitejs.dev/guide/env-and-mode.html#env-files
  */
 function App() {
   const [error, setError] = useState<string>();
