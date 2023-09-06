@@ -1,0 +1,45 @@
+// Import Deephaven styling so we can use it's variables
+@import '@deephaven/components/scss/custom.scss';
+
+.App {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  background: $white;
+  color: $black;
+
+  // Add our own overrides to make a light theme for Golden Layout
+  // See all the golden layout properties, check https://github.com/deephaven/web-client-ui/blob/main/packages/dashboard/src/layout/GoldenLayout.scss
+  .lm_goldenlayout {
+    background: $white;
+    .lm_content {
+      background: $gray-100;
+    }
+  }
+
+  // Override some styles in Iris Grid side bar
+  // See https://github.com/deephaven/web-client-ui/blob/main/packages/iris-grid/src/IrisGrid.scss
+  .iris-grid {
+    .table-sidebar {
+      background: $white;
+
+      .main-view {
+        background: $white;
+        color: $black;
+
+        .btn-navigation-menu-item {
+          color: $black;
+        }
+      }
+    }
+
+    .grid-settings-button {
+      background-image: linear-gradient(to left, $white 19px, transparent);
+    }
+  }
+}

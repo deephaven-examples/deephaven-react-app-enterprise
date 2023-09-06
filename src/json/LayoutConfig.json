@@ -1,0 +1,151 @@
+[
+  {
+    "type": "row",
+    "isClosable": true,
+    "isFocusOnShow": true,
+    "reorderEnabled": true,
+    "title": "",
+    "content": [
+      {
+        "type": "column",
+        "isClosable": true,
+        "isFocusOnShow": true,
+        "reorderEnabled": true,
+        "title": "",
+        "width": 75.47038327526133,
+        "content": [
+          {
+            "type": "stack",
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "height": 72.99077733860344,
+            "activeItemIndex": 0,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1692799024862000000",
+                    "table": "t"
+                  }
+                },
+                "title": "t",
+                "id": "kCVff2UyX",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "header": {},
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "activeItemIndex": 0,
+            "height": 27.00922266139657,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1692799024862000000",
+                    "table": "trades"
+                  }
+                },
+                "title": "trades",
+                "id": "ErfgquPE_",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "column",
+        "isClosable": true,
+        "isFocusOnShow": true,
+        "reorderEnabled": true,
+        "title": "",
+        "width": 24.52961672473868,
+        "content": [
+          {
+            "type": "stack",
+            "header": {},
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "activeItemIndex": 0,
+            "width": 50,
+            "height": 50,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1692799024862000000",
+                    "table": "trades2"
+                  }
+                },
+                "title": "trades2",
+                "id": "91rKKud3B",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "header": {},
+            "isClosable": true,
+            "isFocusOnShow": true,
+            "reorderEnabled": true,
+            "title": "",
+            "activeItemIndex": 0,
+            "height": 50,
+            "content": [
+              {
+                "type": "react-component",
+                "component": "IrisGridPanel",
+                "props": {
+                  "metadata": {
+                    "query": "Test Query",
+                    "querySerial": "1692799024862000000",
+                    "table": "tSum"
+                  }
+                },
+                "title": "tSum",
+                "id": "-Ky4cnbop",
+                "componentName": "lm-react-component",
+                "isClosable": true,
+                "isFocusOnShow": true,
+                "reorderEnabled": true,
+                "componentState": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

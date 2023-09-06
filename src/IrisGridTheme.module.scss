@@ -1,0 +1,54 @@
+@import '@deephaven/components/scss/custom.scss';
+
+:export {
+  grid-bg: $gray-100;
+  font: 12px Fira Sans, sans-serif;
+  header-bg: $interfacewhite;
+  header-color: $gray-800;
+  header-separator-color: $gray-100;
+  header-separator-hover-color: $gray-600;
+  header-hidden-separator-hover-color: $primary;
+  header-sort-bar-color: $primary;
+  header-font: 12px Fira Sans Medium, sans-serif;
+  row-background-colors: #f5f5f5 #ffffff;
+  selection-color: #d0edfd;
+  selection-outline-color: $blue;
+  row-hover-bg: #f2f2f2;
+  selected-row-hover-bg: rgba($blue, 0.25);
+  scroll-bar-bg: $interfacewhite;
+  scroll-bar-hover-bg: $gray-300;
+  scroll-bar-color: $gray-400;
+  scroll-bar-hover-color: $gray-700;
+  text-color: $black;
+  positive-number-color: darken($green, 30%);
+  negative-number-color: darken($red, 30%);
+  zero-number-color: darken($yellow, 30%);
+  date-color: darken($yellow, 30%);
+  $filter-color: $primary-light; // local to just the following
+  filter-bar-active-bg: scale-color(
+    $filter-color,
+    $saturation: -65%,
+    $lightness: -40%
+  );
+  filter-bar-active-color: $filter-color;
+  filter-bar-expanded-bg: $gray-800;
+  filter-bar-expanded-active-bg: scale-color(
+    $filter-color,
+    $saturation: -75%,
+    $lightness: -60%
+  );
+  filter-bar-expanded-active-cell-bg: scale-color(
+    $filter-color,
+    $saturation: -50%,
+    $lightness: -40%
+  );
+  filter-bar-separator-color: $gray-400;
+  filter-bar-error-color: $danger;
+  filter-icon-color: $filter-color;
+  scrim-color: $gray-500;
+  context-menu-sort-icon-color: $primary;
+  linker-column-hover-bg: rgba($blue, 0.09);
+
+  scroll-bar-casing-color: $gray-300;
+  scroll-bar-corner-color: $gray-200;
+}
