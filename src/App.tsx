@@ -10,11 +10,11 @@ import "./App.scss"; // Styles for in this app
 
 const CLIENT_TIMEOUT = 60_000;
 
-const API_URL = process.env.REACT_APP_DEEPHAVEN_API_URL ?? "";
+const API_URL = import.meta.env.VITE_DEEPHAVEN_API_URL ?? "";
 
-const USER = process.env.REACT_APP_DEEPHAVEN_USER ?? "";
+const USER = import.meta.env.VITE_DEEPHAVEN_USER ?? "";
 
-const PASSWORD = process.env.REACT_APP_DEEPHAVEN_PASSWORD ?? "";
+const PASSWORD = import.meta.env.VITE_DEEPHAVEN_PASSWORD ?? "";
 
 /**
  * Wait for Deephaven client to be connected
@@ -184,7 +184,7 @@ function App() {
       // Create the `IrisGridModel` for use with the `IrisGrid` component
       console.log(`Creating model...`);
 
-      const newModel = await IrisGridModelFactory.makeModel(table);
+      const newModel = await IrisGridModelFactory.makeModel(dh, table);
 
       setModel(newModel);
 
