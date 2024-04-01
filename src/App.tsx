@@ -10,6 +10,12 @@ import "./App.scss"; // Styles for in this app
 
 const CLIENT_TIMEOUT = 60_000;
 
+/** Key name for the session key we store in session storage */
+const SAML_SESSION_KEY = "@deephaven/react-example-app:samlSession";
+
+/** Query param for SAML redirect */
+const SAML_REDIRECT_PARAM = "isSamlRedirect";
+
 const API_URL = import.meta.env.VITE_DEEPHAVEN_API_URL ?? "";
 
 const USER = import.meta.env.VITE_DEEPHAVEN_USER ?? "";
@@ -114,14 +120,13 @@ async function createTable(client: any) {
   console.log("Creating session...");
 
   // Specify the language, 'python' or 'groovy'
-  const session = await dhConsole.startSession("python");
+  const session = await dhConsole.startSession("groovy");
 
   // Run the code in the session to open a table
 
   console.log(`Creating table...`);
 
   // Run the code you want to run. This example just creates a timeTable
-  await session.runCode("from deephaven.TableTools import timeTable");
   const result = await session.runCode(
     't = timeTable("00:00:01").update("A=i")'
   );
@@ -133,6 +138,15 @@ async function createTable(client: any) {
   console.log(`Fetching table ${definition.name}...`);
 
   return await session.getObject(definition);
+}
+
+/** create base-64 encoded key from a random string with the length no less than 96 (required by the authentication server SAML module) */
+function makeSAMLSessionKey(): string {
+  let key = "";
+  for (let i = 0; i < 96; i += 1) {
+    key += String.fromCharCode(Math.floor(Math.random() * 255));
+  }
+  return btoa(key);
 }
 
 /**
@@ -169,10 +183,84 @@ function App() {
 
       await clientConnected(client);
 
-      await client.login({ username: USER, token: PASSWORD, type: "password" });
+      console.log(`Getting auth config values...`);
+
+      const authConfig = new Map<string, string>(
+        await client.getAuthConfigValues()
+      );
+
+      console.log("Auth config values are: ", authConfig);
+
+      // Get the SAML values from the auth config
+      const samlProvider =
+        authConfig.get("authentication.client.samlauth.provider.name") ?? "";
+      const samlUrl =
+        authConfig.get("authentication.client.samlauth.login.url") ?? "";
+      const samlModule =
+        authConfig.get("authentication.client.customlogin.class.SAMLAuth") ??
+        "";
+      const isSamlEnabled =
+        Boolean(samlModule) && Boolean(samlProvider) && Boolean(samlUrl);
+
+      const searchParams = new URLSearchParams(window.location.search);
+
+      if (isSamlEnabled) {
+        const isSamlRedirect = searchParams.has(SAML_REDIRECT_PARAM);
+        const sessionKey = sessionStorage.getItem(SAML_SESSION_KEY) ?? "";
+        if (!isSamlRedirect || !Boolean(sessionKey)) {
+          // We have not authenticated with our provider yet, redirect to the provider login screen
+          console.log(
+            `SAML is enabled, redirecting to provider '${samlProvider}' login...`
+          );
+
+          // Set a session key that we pass to the authentication provider when logging in
+          const samlKey = makeSAMLSessionKey();
+          sessionStorage.setItem(SAML_SESSION_KEY, samlKey);
+
+          const redirectUrl = new URL(window.location.href);
+          // const redirectUrl = new URL(
+          //   "https://charleswright-vplus17c.int.illumon.com:8123/iriside/"
+          // );
+          if (redirectUrl.searchParams.has(SAML_REDIRECT_PARAM)) {
+            redirectUrl.searchParams.append(SAML_REDIRECT_PARAM, "true");
+          }
+
+          const samlLoginUrl = new URL(samlUrl);
+          samlLoginUrl.searchParams.set("key", samlKey);
+          samlLoginUrl.searchParams.set("redirect", redirectUrl.href);
+
+          window.location.href = samlLoginUrl.href;
+          return;
+        } else {
+          // We authenticated with our provider and were redirected back to the app, use our session key to login
+          console.log(
+            `SAML provider '${samlProvider}' redirected back, authenticating with Deephaven...`
+          );
+
+          // We only want to use the key once, remove it from session storage
+          sessionStorage.removeItem(SAML_SESSION_KEY);
+
+          await client.login({
+            username: USER,
+            token: decodeURIComponent(sessionKey),
+            type: "saml",
+          });
+
+          // We've logged in successfully, remove the redirect param from the URL
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete(SAML_REDIRECT_PARAM);
+          window.history.replaceState({}, "", newUrl.href);
+        }
+      } else {
+        // SAML is not enabled, login with the provided username and password
+        await client.login({
+          username: USER,
+          token: PASSWORD,
+          type: "password",
+        });
+      }
 
       // Get the table name from the search params `queryName` and `tableName`.
-      const searchParams = new URLSearchParams(window.location.search);
       const queryName = searchParams.get("queryName");
       const tableName = searchParams.get("tableName");
 
