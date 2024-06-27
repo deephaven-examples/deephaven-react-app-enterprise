@@ -14,8 +14,10 @@
     "@deephaven/dashboard": "^0.46.0",
     "@deephaven/iris-grid": "^0.46.0",
     "@deephaven/jsapi-shim": "^0.46.0",
+    "@deephaven/jsapi-utils": "^0.46.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.24.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.2",
