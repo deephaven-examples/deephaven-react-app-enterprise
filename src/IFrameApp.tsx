@@ -136,12 +136,19 @@ function App() {
       const query = await getQuery(client, queryName);
       console.log("Query successfully loaded!", query);
 
+      if (query.status !== "Running") {
+        throw new Error(`Query ${queryName} is not running`);
+      }
+
+      const { envoyPrefix } = query;
+      const envoyParam = envoyPrefix ? `&envoyPrefix=${envoyPrefix}` : "";
+
       // Build the URL for the IFrame URL
       // ../iframe/widget/ is the path to the IFrame widget relative to the IDE Url
       // The authProvider=parent parameter tells the IFrame to use the parent's (e.g. this window's) authentication.
       // The name parameter specifies the widget to open
       const newUrl = new URL(
-        `../iframe/widget/?authProvider=parent&name=${widgetName}`,
+        `../iframe/widget/?authProvider=parent&name=${widgetName}${envoyParam}`,
         query.ideUrl
       );
       console.log("Setting IFrame URL to", newUrl.href);
