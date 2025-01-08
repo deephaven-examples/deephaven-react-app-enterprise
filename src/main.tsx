@@ -6,6 +6,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "@deephaven/components/scss/BaseStyleSheet.scss";
 import App from "./App";
 import IFrameApp from "./IFrameApp";
+import { preloadTheme, ThemeProvider } from "@deephaven/components";
 
 const router = createBrowserRouter([
   {
@@ -18,9 +19,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Preload any cached theme variables to avoid a flash of unstyled content
+preloadTheme();
+
 ReactDOM.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider themes={null}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
