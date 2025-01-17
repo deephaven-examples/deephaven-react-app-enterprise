@@ -7,8 +7,13 @@ import {
   isMessage,
   makeResponse,
 } from "@deephaven/jsapi-utils";
-
-const CLIENT_TIMEOUT = 60_000;
+import { EnterpriseClient } from "@deephaven-enterprise/jsapi-types";
+import {
+  clientConnected,
+  getQuery,
+  getWebsocketUrl,
+  isCorePlusQuery,
+} from "./Utils";
 
 const API_URL = import.meta.env.VITE_DEEPHAVEN_API_URL ?? "";
 
@@ -19,70 +24,7 @@ const PASSWORD = import.meta.env.VITE_DEEPHAVEN_PASSWORD ?? "";
 const WIDTH = 800;
 const HEIGHT = 600;
 
-/**
- * Wait for Deephaven client to be connected
- * @param client Deephaven client object
- * @returns When the client is connected, rejects on timeout
- */
-function clientConnected(client: any): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (client.isConnected) {
-      resolve();
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      reject(new Error("Timeout waiting for connect"));
-    }, CLIENT_TIMEOUT);
-
-    client.addEventListener(dh.Client.EVENT_CONNECT, () => {
-      resolve();
-      clearTimeout(timer);
-    });
-  });
-}
-
-/**
- * Load an existing Deephaven table with the client and query name provided
- * Needs to listen for when queries are added to the list as they are not known immediately after connecting.
- * @param client The Deephaven client object
- * @param queryName Name of the query to load
- * @returns Deephaven table
- */
-function getQuery(client: any, queryName: string): Promise<any> {
-  console.log(`Fetching query ${queryName}`);
-
-  return new Promise((resolve, reject) => {
-    let removeListener: () => void;
-
-    const timeout = setTimeout(() => {
-      reject(new Error(`Query not found, ${queryName}`));
-      removeListener();
-    }, 10000);
-
-    function resolveIfQueryFound(queries: any[]) {
-      const matchingQuery = queries.find((query) => query.name === queryName);
-
-      if (matchingQuery) {
-        resolve(matchingQuery);
-        clearTimeout(timeout);
-        removeListener();
-      }
-    }
-
-    function listener(event: any) {
-      const addedQueries = [event.detail];
-      resolveIfQueryFound(addedQueries);
-    }
-
-    removeListener = client.addEventListener(
-      dh.Client.EVENT_CONFIG_ADDED,
-      listener
-    );
-    const initialQueries = client.getKnownConfigs();
-    resolveIfQueryFound(initialQueries);
-  });
-}
+const enterpriseApi = dh as EnterpriseDhType;
 
 /**
  * A functional React component that opens an IFrame to a table in a specified Core+ PQ. Will pass the authentication details to the IFrame so it does not need to login.
@@ -97,7 +39,7 @@ function App() {
   const [iframeUrl, setIframeUrl] = useState<string>();
   const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
-  const [client, setClient] = useState<any>();
+  const [client, setClient] = useState<EnterpriseClient>();
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
   const initApp = useCallback(async () => {
@@ -105,16 +47,11 @@ function App() {
       // Connect to the Web API server
       const baseUrl = new URL(API_URL ?? "", `${window.location}`);
 
-      const websocketUrl = new URL("/socket", baseUrl);
-      if (websocketUrl.protocol === "http:") {
-        websocketUrl.protocol = "ws:";
-      } else {
-        websocketUrl.protocol = "wss:";
-      }
+      const websocketUrl = getWebsocketUrl(baseUrl);
 
       console.log(`Creating client ${websocketUrl}...`);
 
-      const client = new dh.Client(websocketUrl.href);
+      const client = new enterpriseApi.Client(websocketUrl.href);
 
       setClient(client);
 
@@ -138,6 +75,11 @@ function App() {
 
       if (query.status !== "Running") {
         throw new Error(`Query ${queryName} is not running`);
+      }
+
+      const serverConfigValues = await client.getServerConfigValues();
+      if (!isCorePlusQuery(query, serverConfigValues.workerKinds)) {
+        throw new Error(`Query ${queryName} is not a Core+ query`);
       }
 
       const { envoyPrefix } = query;
@@ -191,6 +133,11 @@ function App() {
       // Check if it's a message that we recognize
       if (!isMessage(data) || data.message !== LOGIN_OPTIONS_REQUEST) {
         console.log("Ignore message, invalid message", data);
+        return;
+      }
+
+      if (client == null) {
+        console.error("Client not initialized");
         return;
       }
 
