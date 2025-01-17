@@ -6,9 +6,21 @@ import {
   IrisGridModelFactory,
 } from "@deephaven/iris-grid"; // iris-grid is used to display Deephaven tables
 import dh from "@deephaven/jsapi-shim"; // Import the shim to use the JS API
+import type {
+  ConsoleConfig,
+  EnterpriseClient,
+  Ide,
+  EnterpriseDhType,
+} from "@deephaven-enterprise/jsapi-types";
+import type { CoreClient } from "@deephaven/jsapi-types";
 import "./App.scss"; // Styles for in this app
-
-const CLIENT_TIMEOUT = 60_000;
+import {
+  clientConnected,
+  getCorePlusApi,
+  getGridModelByQueryName,
+  getWebsocketUrl,
+  isCorePlusWorkerKind,
+} from "./Utils";
 
 const API_URL = import.meta.env.VITE_DEEPHAVEN_API_URL ?? "";
 
@@ -16,71 +28,7 @@ const USER = import.meta.env.VITE_DEEPHAVEN_USER ?? "";
 
 const PASSWORD = import.meta.env.VITE_DEEPHAVEN_PASSWORD ?? "";
 
-/**
- * Wait for Deephaven client to be connected
- * @param client Deephaven client object
- * @returns When the client is connected, rejects on timeout
- */
-function clientConnected(client: any): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (client.isConnected) {
-      resolve();
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      reject(new Error("Timeout waiting for connect"));
-    }, CLIENT_TIMEOUT);
-
-    client.addEventListener(dh.Client.EVENT_CONNECT, () => {
-      resolve();
-      clearTimeout(timer);
-    });
-  });
-}
-
-/**
- * Load an existing Deephaven table with the client and query name provided
- * Needs to listen for when queries are added to the list as they are not known immediately after connecting.
- * @param client The Deephaven client object
- * @param queryName Name of the query to load
- * @param tableName Name of the table to load
- * @returns Deephaven table
- */
-function loadTable(client: any, queryName: string, tableName: string) {
-  console.log(`Fetching query ${queryName}, table ${tableName}...`);
-
-  return new Promise((resolve, reject) => {
-    let removeListener: () => void;
-
-    const timeout = setTimeout(() => {
-      reject(new Error(`Query not found, ${queryName}`));
-      removeListener();
-    }, 10000);
-
-    function resolveIfQueryFound(queries: any[]) {
-      const matchingQuery = queries.find((query) => query.name === queryName);
-
-      if (matchingQuery) {
-        resolve(matchingQuery.getTable(tableName));
-        clearTimeout(timeout);
-        removeListener();
-      }
-    }
-
-    function listener(event: any) {
-      const addedQueries = [event.detail];
-      resolveIfQueryFound(addedQueries);
-    }
-
-    removeListener = client.addEventListener(
-      dh.Client.EVENT_CONFIG_ADDED,
-      listener
-    );
-    const initialQueries = client.getKnownConfigs();
-    resolveIfQueryFound(initialQueries);
-  });
-}
+const enterpriseApi = dh as EnterpriseDhType;
 
 /**
  * Create a new Deephaven table with the session provided.
@@ -88,17 +36,32 @@ function loadTable(client: any, queryName: string, tableName: string) {
  * - Timestamp: The timestamp of the tick
  * - A: The row number
  * @param client The Deephaven client object
- * @param name Name of the table to load
  * @returns Deephaven table
  */
-async function createTable(client: any) {
+async function createGridModel(
+  client: EnterpriseClient
+): Promise<IrisGridModel> {
   // Create a new session... API is currently undocumented and subject to change in future revisions
-  const ide = new dh.Ide(client);
+  const ide: Ide = new enterpriseApi.Ide(client);
+
+  // Get the server configuration values, to see what engine types are available
+  const serverConfigValues = await client.getServerConfigValues();
 
   // Create a default config
-  const config = new dh.ConsoleConfig();
+  const config: ConsoleConfig = new enterpriseApi.ConsoleConfig();
 
   // Set configuration parameters here if you don't want the default
+  // Some of them are wired up to query parameters for easy testing
+  // Go to URL ?workerKind=DeephavenCommunity&jvmArgs=-Dhttp.websockets=true to open a Core+ worker
+  // Need to enable websockets to open from localhost
+  const searchParams = new URLSearchParams(window.location.search);
+  const workerKind = searchParams.get("workerKind");
+  if (workerKind != null) {
+    config.workerKind = workerKind;
+  }
+  if (searchParams.has("jvmArgs")) {
+    config.jvmArgs = searchParams.getAll("jvmArgs");
+  }
   // config.maxHeapMb = 2048;
   // config.jvmProfile = ...;
   // config.jvmArgs = ...;
@@ -108,6 +71,65 @@ async function createTable(client: any) {
   // config.dispatcherPort = ...;
 
   console.log("Creating console with config ", config);
+
+  const isCoreWorker =
+    workerKind != null &&
+    isCorePlusWorkerKind(workerKind, serverConfigValues.workerKinds);
+  if (isCoreWorker) {
+    console.log("Creating Core+ worker...");
+    config.workerCreationJson = JSON.stringify({ script_language: "python" });
+
+    // Start up the Core+ worker
+    const worker = await ide.startWorker(config);
+
+    console.log("Started worker", worker, ", loading API");
+
+    // Load the Core+ API from the worker
+    const { grpcUrl, envoyPrefix, jsApiUrl } = worker;
+    const coreApi = await getCorePlusApi(jsApiUrl);
+
+    const clientOptions =
+      envoyPrefix != null
+        ? { headers: { "envoy-prefix": envoyPrefix } }
+        : undefined;
+    const coreClient: CoreClient = new coreApi.CoreClient(
+      grpcUrl,
+      clientOptions
+    );
+
+    // Generate an auth token from the enterprise client to connect
+    const token = await client.createAuthToken("RemoteQueryProcessor");
+    const loginOptions = {
+      type: "io.deephaven.proto.auth.Token",
+      token,
+    };
+
+    console.log("Logging in to Core+ worker...");
+
+    await coreClient.login(loginOptions);
+
+    console.log("Creating session...");
+
+    const connection = await coreClient.getAsIdeConnection();
+
+    const session = await connection.startSession("python");
+
+    // Run the code you want to run. This example just creates a time_table
+    await session.runCode("from deephaven import time_table");
+    const result = await session.runCode(
+      't = time_table("PT1s").update("A=i")'
+    );
+
+    // Get the new table definition from the results
+    // Results also includes modified/removed objects, which doesn't apply in this case
+    const definition = result.changes.created[0];
+
+    console.log(`Fetching table ${definition.name}...`);
+
+    const table = await session.getObject(definition);
+
+    return IrisGridModelFactory.makeModel(coreApi, table);
+  }
 
   const dhConsole = await ide.createConsole(config);
 
@@ -132,7 +154,9 @@ async function createTable(client: any) {
 
   console.log(`Fetching table ${definition.name}...`);
 
-  return await session.getObject(definition);
+  const table = await session.getObject(definition);
+
+  return IrisGridModelFactory.makeModel(enterpriseApi, table);
 }
 
 /**
@@ -147,23 +171,18 @@ function App() {
   const [model, setModel] = useState<IrisGridModel>();
   const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
-  const [client, setClient] = useState<any>();
+  const [client, setClient] = useState<EnterpriseClient>();
 
   const initApp = useCallback(async () => {
     try {
       // Connect to the Web API server
       const baseUrl = new URL(API_URL ?? "", `${window.location}`);
 
-      const websocketUrl = new URL("/socket", baseUrl);
-      if (websocketUrl.protocol === "http:") {
-        websocketUrl.protocol = "ws:";
-      } else {
-        websocketUrl.protocol = "wss:";
-      }
+      const websocketUrl = getWebsocketUrl(baseUrl);
 
       console.log(`Creating client ${websocketUrl}...`);
 
-      const client = new dh.Client(websocketUrl.href);
+      const client = new enterpriseApi.Client(websocketUrl.href);
 
       setClient(client);
 
@@ -177,14 +196,9 @@ function App() {
       const tableName = searchParams.get("tableName");
 
       // If a table name was specified, load that table. Otherwise, create a new table.
-      const table = await (queryName && tableName
-        ? loadTable(client, queryName, tableName)
-        : createTable(client));
-
-      // Create the `IrisGridModel` for use with the `IrisGrid` component
-      console.log(`Creating model...`);
-
-      const newModel = await IrisGridModelFactory.makeModel(dh, table);
+      const newModel = await (queryName && tableName
+        ? getGridModelByQueryName(client, queryName, tableName)
+        : createGridModel(client));
 
       setModel(newModel);
 
