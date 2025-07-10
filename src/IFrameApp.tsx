@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { LoadingOverlay } from "@deephaven/components"; // Use the loading spinner from the Deephaven components package
 import dh from "@deephaven/jsapi-shim"; // Import the shim to use the JS API
 import "./App.scss"; // Styles for in this app
+import { LOGIN_OPTIONS_REQUEST } from "@deephaven/jsapi-utils";
+import { isMessage, makeResponse } from "@deephaven/utils";
 import {
-  LOGIN_OPTIONS_REQUEST,
-  isMessage,
-  makeResponse,
-} from "@deephaven/jsapi-utils";
-import { EnterpriseClient } from "@deephaven-enterprise/jsapi-types";
+  EnterpriseClient,
+  EnterpriseDhType,
+} from "@deephaven-enterprise/jsapi-types";
 import {
   clientConnected,
   getQuery,
