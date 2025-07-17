@@ -9,7 +9,7 @@ import type {
   EnterpriseDhType,
   WorkerKind,
 } from "@deephaven-enterprise/jsapi-types";
-import { CoreClient, dh as CoreDhType } from "@deephaven/jsapi-types";
+import { dh as CoreDhType } from "@deephaven/jsapi-types";
 import { IrisGridModel, IrisGridModelFactory } from "@deephaven/iris-grid";
 
 export const CLIENT_TIMEOUT = 60_000;
@@ -87,7 +87,7 @@ export async function getCorePlusClient(
   token: string,
   grpcUrl: string,
   envoyPrefix?: string | null
-): Promise<CoreClient> {
+): Promise<CoreDhType.CoreClient> {
   // Create a Core+ client instance and authenticate
   const clientOptions = envoyPrefix
     ? {
@@ -173,8 +173,6 @@ export async function getQuery(
   console.log("Fetching query", queryName);
 
   return new Promise((resolve, reject) => {
-    let removeListener: () => void;
-
     const timeout = setTimeout(() => {
       reject(new Error(`Query not found, ${queryName}`));
       removeListener();
@@ -195,7 +193,7 @@ export async function getQuery(
       resolveIfQueryFound(addedQueries);
     }
 
-    removeListener = client.addEventListener(
+    const removeListener = client.addEventListener(
       enterpriseApi.Client.EVENT_CONFIG_ADDED,
       listener
     );
@@ -228,7 +226,8 @@ export async function getGridModelByQueryName(
  */
 export async function clientConnected(client: EnterpriseClient): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (client.isConnected) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((client as any).isConnected) {
       resolve();
       return;
     }
@@ -237,7 +236,7 @@ export async function clientConnected(client: EnterpriseClient): Promise<void> {
       reject(new Error("Timeout waiting for connect"));
     }, CLIENT_TIMEOUT);
 
-    client.addEventListener(dh.Client.EVENT_CONNECT, () => {
+    client.addEventListener(enterpriseApi.Client.EVENT_CONNECT, () => {
       resolve();
       clearTimeout(timer);
     });
