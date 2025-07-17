@@ -7,7 +7,10 @@ import {
   isMessage,
   makeResponse,
 } from "@deephaven/jsapi-utils";
-import { EnterpriseClient } from "@deephaven-enterprise/jsapi-types";
+import type {
+  EnterpriseClient,
+  EnterpriseDhType,
+} from "@deephaven-enterprise/jsapi-types";
 import {
   clientConnected,
   getQuery,

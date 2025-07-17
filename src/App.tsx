@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LoadingOverlay } from "@deephaven/components"; // Use the loading spinner from the Deephaven components package
 import {
   IrisGrid,
@@ -12,7 +12,7 @@ import type {
   Ide,
   EnterpriseDhType,
 } from "@deephaven-enterprise/jsapi-types";
-import type { CoreClient } from "@deephaven/jsapi-types";
+import type { dh as DhType } from "@deephaven/jsapi-types";
 import "./App.scss"; // Styles for in this app
 import {
   clientConnected,
@@ -92,7 +92,7 @@ async function createGridModel(
       envoyPrefix != null
         ? { headers: { "envoy-prefix": envoyPrefix } }
         : undefined;
-    const coreClient: CoreClient = new coreApi.CoreClient(
+    const coreClient: DhType.CoreClient = new coreApi.CoreClient(
       grpcUrl,
       clientOptions
     );
